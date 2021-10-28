@@ -42,10 +42,9 @@ function noteCreate(text, date, cb) {
     });
 }
 
-function userCreate(first_name, last_name, email, location, cb) {
+function userCreate(name, email, location, cb) {
     userdetail = {
-        first_name: first_name,
-        last_name: last_name
+        name: name
     }
     if (email != false) userdetail.email = email;
     if (location != false) userdetail.location = location;
@@ -81,7 +80,7 @@ function createNotes(cb) {
 function createUsers(cb) {
     async.series([
         function(callback) {
-            userCreate("Minki", "Jeon", "minki.jeon@stonybrook.edu", "Incheon Songdo", callback);
+            userCreate("Minki Jeon", "minki.jeon@stonybrook.edu", "Incheon Songdo", callback);
         }
         ],
         cb);

@@ -33,36 +33,24 @@ app.use((req, res, next) => {
     next();
 });
 
-// There can be multiple middleware – this one only triggers if this route is accessed
 app.use('/api/notes/:id', (req, res, next) => {
     console.log("Request involving a specific note")
-    next(); // Try commenting out this next() and accessing a specific author page
+    next();
 });
 
-// Using an async function to be able to use the "await" functionality below, which makes
-// the find command run synchronously.
+//get notes
 app.get('/api/notes', wrapAsync(async function (req,res) {
     const notes = await Note.find({});
     res.json(notes);
 }));
 
-//get notes
+//get users
 app.get('/api/users', wrapAsync(async function (req,res) {
     const users = await User.find({});
     res.json(users);
 }));
 
-//add notes
-app.post(`/api/notes`, wrapAsync(async function (req, res) {
-    console.log("Posted with body: " + JSON.stringify(req.body));
-    const newNote = new Note({
-        text: req.body.text,
-        date: req.body.date
-    })
-    await newNote.save();
-    res.json(newNote);
-}));
-
+//get note by id
 app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
     let id = req.params.id;
     if (mongoose.isValidObjectId(id)) {
@@ -78,6 +66,27 @@ app.get('/api/notes/:id', wrapAsync(async function (req,res, next) {
     }
 }));
 
+//add note
+app.post(`/api/notes`, wrapAsync(async function (req, res) {
+    console.log("Posted with body: " + JSON.stringify(req.body));
+    const newNote = new Note({
+        text: req.body.text,
+        date: req.body.date
+    })
+    await newNote.save();
+    res.json(newNote);
+}));
+
+//update note
+app.put('/api/notes/:id', wrapAsync(async function (req, res) {
+    const id = req.params.id;
+    console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
+    await Note.findByIdAndUpdate(id, {'text': req.body.text, "date": req.body.date},
+        {runValidators: true});
+    res.sendStatus(204);
+}));
+
+//delete note
 app.delete('/api/notes/:id', wrapAsync(async function (req, res) {
     const id = req.params.id;
     const result = await Note.findByIdAndDelete(id);
@@ -85,16 +94,37 @@ app.delete('/api/notes/:id', wrapAsync(async function (req, res) {
     res.json(result);
 }));
 
-app.put('/api/notes/:id', wrapAsync(async function (req, res) {
+//add user
+app.post(`/api/users`, wrapAsync(async function (req, res) {
+    console.log("Posted with body: " + JSON.stringify(req.body));
+    const newNote = new User({
+        name: req.body.name,
+        email: req.body.email,
+        location: req.body.location
+    })
+    await newNote.save();
+    res.json(newNote);
+}));
+
+//update user
+app.put('/api/users/:id', wrapAsync(async function (req, res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
-    // This below method automatically saves it to the database
-    // findByIdAndUpdate by default does not run the validators, so we need to set the option to enable it.
-    await Note.findByIdAndUpdate(id, {'first_name': req.body.first_name, "family_name": req.body.family_name},
+    await Note.findByIdAndUpdate(id, {
+            'name': req.body.name,
+            "email": req.body.email,
+            'location': req.body.location
+        },
         {runValidators: true});
-    // Status 204 represents success with no content
-    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/204
     res.sendStatus(204);
+}));
+
+//delete user
+app.delete('/api/users/:id', wrapAsync(async function (req, res) {
+    const id = req.params.id;
+    const result = await Note.findByIdAndDelete(id);
+    console.log("Deleted successfully: " + result);
+    res.json(result);
 }));
 
 app.use((err, req, res, next) => {
