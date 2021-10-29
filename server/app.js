@@ -65,7 +65,7 @@ app.post(`/api/notes`, wrapAsync(async function (req, res) {
     console.log("Posted with body: " + JSON.stringify(req.body));
     const newNote = new Note({
         text: req.body.text,
-        date: req.body.date
+        lastUpdatedDate: req.body.lastUpdatedDate
     })
     await newNote.save();
     res.json(newNote);
@@ -75,7 +75,7 @@ app.post(`/api/notes`, wrapAsync(async function (req, res) {
 app.put('/api/notes/:id', wrapAsync(async function (req, res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
-    await Note.findByIdAndUpdate(id, {'text': req.body.text, "date": req.body.date},
+    await Note.findByIdAndUpdate(id, {'text': req.body.text, "lastUpdatedDate": req.body.lastUpdatedDate},
         {runValidators: true});
     res.sendStatus(204);
 }));

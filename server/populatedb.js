@@ -20,7 +20,7 @@ var users = []
 function noteCreate(text, date, cb) {
     notedetail = {
         text: text,
-        date: date
+        lastUpdatedDate: date
     }
 
     var note = new Note(notedetail);
