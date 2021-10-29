@@ -110,7 +110,7 @@ app.post(`/api/users`, wrapAsync(async function (req, res) {
 app.put('/api/users/:id', wrapAsync(async function (req, res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
-    await Note.findByIdAndUpdate(id, {
+    await User.findByIdAndUpdate(id, {
             'name': req.body.name,
             "email": req.body.email,
             'location': req.body.location
