@@ -8,28 +8,22 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.json());
 
 //Set up mongoose connection
-var mongoDB = 'mongodb://localhost:27017/CSE_316_Assignment_DB'; // insert your database URL here
+var mongoDB = 'mongodb://localhost:27017/CSE_316_Assignment_DB';
 mongoose.connect(mongoDB, { useNewUrlParser: true , useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-// Changing this setting to avoid a Mongoose deprecation warning:
-// See: https://mongoosejs.com/docs/deprecations.html#findandmodify
 mongoose.set('useFindAndModify', false);
 
-// This is a function we can use to wrap our existing async route functions so they automatically catch errors
-// and call the next() handler
 function wrapAsync(fn) {
     return function (req, res, next) {
         fn(req, res, next).catch(e => next(e))
     }
 }
 
-// This is middleware that will run before every request
 app.use((req, res, next) => {
     req.requestTime = Date.now();
     console.log(req.method, req.path);
-    // Calling next() makes it go to the next function that will handle the request
     next();
 });
 
@@ -129,16 +123,12 @@ app.delete('/api/users/:id', wrapAsync(async function (req, res) {
 
 app.use((err, req, res, next) => {
     console.log("Error handling called");
-    // If want to print out the error stack, uncomment below
-    // console.error(err.stack)
-    // Updating the statusMessage with our custom error message (otherwise it will have a default for the status code).
     res.statusMessage = err.message;
 
     if (err.name === 'ValidationError') {
         res.status(400).end();
     }
     else {
-        // We could further interpret the errors to send a specific status based more error types.
         res.status(500).end();
     }
 })

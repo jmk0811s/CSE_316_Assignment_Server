@@ -2,12 +2,7 @@
 
 // Get arguments passed on command line
 var userArgs = process.argv.slice(2);
-/*
-if (!userArgs[0].startsWith('mongodb')) {
-    console.log('ERROR: You need to specify a valid mongodb URL as the first argument');
-    return
-}
-*/
+
 var async = require('async')
 var Note = require('./models/note')
 var User = require('./models/user')
@@ -65,13 +60,13 @@ function userCreate(name, email, location, cb) {
 function createNotes(cb) {
     async.series([
             function(callback) {
-                noteCreate("New Note 1", (new Date(Date.now())).toLocaleString(), callback);
+                noteCreate("Example Note 1", Date.now(), callback);
             },
             function(callback) {
-                noteCreate("New Note 2", (new Date(Date.now())).toLocaleString(), callback);
+                noteCreate("Example Note 2", Date.now(), callback);
             },
             function(callback) {
-                noteCreate("New Note 3", (new Date(Date.now())).toLocaleString(), callback);
+                noteCreate("Example Note 3", Date.now(), callback);
             }
         ],
         cb);
