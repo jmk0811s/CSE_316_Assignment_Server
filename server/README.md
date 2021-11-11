@@ -12,7 +12,7 @@ For example, to use the URL listed in the project
 
 To run the backend server, type:
 
-    node app.js
+    node server.js
 
 Try going to:
 
