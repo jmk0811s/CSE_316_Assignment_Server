@@ -91,7 +91,7 @@ server.get('/api/currentuser', wrapAsync(async function (req, res) {
 }));
 
 //update user
-server.put('/api/users/:id', wrapAsync(async function (req, res) {
+server.put('/api/users/:id', requireLogin, wrapAsync(async function (req, res) {
     const id = req.params.id;
     console.log("PUT with id: " + id + ", body: " + JSON.stringify(req.body));
     await User.findByIdAndUpdate(id, {
@@ -118,8 +118,8 @@ server.delete('/api/users/:id', wrapAsync(async function (req, res) {
  */
 
 //register @
-server.post('/api/register',  wrapAsync(async function (req, res) {
-    const { password, email } = req.body;
+server.post('/api/users',  wrapAsync(async function (req, res) {
+    const { email, password } = req.body;
     const user = new User({ email, password })
     await user.save();
     req.session.userId = user._id;
@@ -131,7 +131,7 @@ server.post('/api/register',  wrapAsync(async function (req, res) {
 
 //login @
 server.post('/api/login', wrapAsync(async function (req, res) {
-    const { password, email } = req.body;
+    const { email, password } = req.body;
     const user = await User.findAndValidate(email, password);
     if (user) {
         req.session.userId = user._id;
@@ -143,7 +143,7 @@ server.post('/api/login', wrapAsync(async function (req, res) {
 }));
 
 //logout @
-server.post('/api/logout', wrapAsync(async function (req, res) {
+server.post('/api/logout', requireLogin, wrapAsync(async function (req, res) {
     req.session.userId = null;
     res.sendStatus(204);
 }));
