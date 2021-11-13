@@ -9,8 +9,8 @@ server.use(bodyParser.json());
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-//var dbURL = process.env.MONGO_URL || 'mongodb://localhost:27017/CSE_316_Assignment_DB'; // insert your database URL here
-var dbURL = process.env.MONGO_URL || 'mongodb+srv://minkijeon:Rmdwjd!0923@cluster0.42sw4.mongodb.net/test';
+//var dbURL = process.env.MONGO_URL || 'mongodb://localhost:27017/CSE_316_Assignment_DB'; //local DB
+var dbURL = process.env.MONGO_URL || 'mongodb+srv://minkijeon:cse316assignment4@cluster0.awbia.mongodb.net/test';
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -119,8 +119,8 @@ server.delete('/api/users/:id', wrapAsync(async function (req, res) {
 
 //register @
 server.post('/api/users', wrapAsync(async function (req, res) {
-    const { email, password } = req.body;
-    const user = new User({ email, password })
+    const { name, email, location, profile_url, password } = req.body;
+    const user = new User({ name, email, location, profile_url, password })
     await user.save();
     req.session.userId = user._id;
     // Note: this is returning the entire user object to demo, which will include the hashed and salted password.
