@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 
 var NoteSchema = new Schema(
     {
-        text: {type: String, required: true},
+        text: {type: String},
         lastUpdatedDate: {type: Date, required: true},
         creator: {type: Schema.Types.ObjectID, ref: "User", required: true}
     }
