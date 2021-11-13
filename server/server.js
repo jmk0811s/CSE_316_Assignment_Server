@@ -9,8 +9,8 @@ server.use(bodyParser.json());
 
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-
-var dbURL = process.env.MONGO_URL || 'mongodb://localhost:27017/CSE_316_Assignment_DB'; // insert your database URL here
+//var dbURL = process.env.MONGO_URL || 'mongodb://localhost:27017/CSE_316_Assignment_DB'; // insert your database URL here
+var dbURL = process.env.MONGO_URL || 'mongodb+srv://minkijeon:Rmdwjd!0923@cluster0.42sw4.mongodb.net/test';
 mongoose.connect(dbURL, {useNewUrlParser: true, useUnifiedTopology: true});
 var db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
@@ -118,7 +118,7 @@ server.delete('/api/users/:id', wrapAsync(async function (req, res) {
  */
 
 //register @
-server.post('/api/users',  wrapAsync(async function (req, res) {
+server.post('/api/users', wrapAsync(async function (req, res) {
     const { email, password } = req.body;
     const user = new User({ email, password })
     await user.save();
@@ -159,7 +159,7 @@ server.get('/api/notes', requireLogin, wrapAsync(async function (req, res) {
 }));
 
 //get note by id
-server.get('/api/notes/:id', wrapAsync(async function (req, res, next) {
+server.get('/api/notes/:id', requireLogin, wrapAsync(async function (req, res, next) {
     let id = req.params.id;
     if (mongoose.isValidObjectId(id)) {
         const note = await Note.findById(id);
